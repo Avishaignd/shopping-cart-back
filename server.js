@@ -10,6 +10,7 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const findOrCreate = require("mongoose-findorcreate");
 const cors = require("cors")
 app.use(cors)
+const productRouter = require('./routes/productRouter')
 app.use(
   session({
     secret: "Our little secret.",
@@ -25,6 +26,8 @@ mongoose.connect(process.env.MONGO_URL, {
   useUnifiedTopology: true,
 });
 mongoose.set("useCreateIndex", true);
+
+app.use('/api/products', productRouter)
 
 const userSchema = new mongoose.Schema({
   username: String,
