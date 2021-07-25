@@ -27,25 +27,27 @@ mongoose.connect(process.env.MONGO_URL, {
   useUnifiedTopology: true,
 });
 app.use("/api/products", productRouter)
+app.use("/api/users", userRouter)
 app.use("/api/v1/auth", authRouter)
-app.use(
-  session({
-    secret: "Our little secret.",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-app.use(passport.initialize());
-app.use(passport.session());
-mongoose.set("useCreateIndex", true);
 
-app.get('/users/:id', (req, res) => {
-  const userId = req.params.id
-  User.findOne({ _id: userId }, function (err, foundUserById) {
-    if (err) return console.log(err);
-    res.send(foundUserById);
-})
-})
+// app.use(
+//   session({
+//     secret: "Our little secret.",
+//     resave: false,
+//     saveUninitialized: false,
+//   })
+// );
+// app.use(passport.initialize());
+// app.use(passport.session());
+// mongoose.set("useCreateIndex", true);
+
+// app.get('/users/:id', (req, res) => {
+//   const userId = req.params.id
+//   User.findOne({ _id: userId }, function (err, foundUserById) {
+//     if (err) return console.log(err);
+//     res.send(foundUserById);
+// })
+// })
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

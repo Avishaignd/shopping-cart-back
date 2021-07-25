@@ -20,7 +20,7 @@ const login = async (req, res) => {
                 cart: [],
                 isAdmin: true,
               })
-            user.save(function (err, user) {
+            await user.save(function (err, user) {
                 if (err) return console.error(err)
                 else {
                     res.status(202).json({ user: user }) 
