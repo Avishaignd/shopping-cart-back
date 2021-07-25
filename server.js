@@ -10,6 +10,8 @@ const findOrCreate = require("mongoose-findorcreate");
 const mongoose = require("mongoose");
 const Product = require('./schemas/productSchema')
 const productRouter = require('./routes/productRouter')
+const userRouter = require('./routes/userRouter')
+const authRouter = require('./routes/authRouter')
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(function (req, res, next) {
@@ -20,7 +22,12 @@ app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Credentials', 'true');
   next();
 });
+mongoose.connect(process.env.MONGO_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 app.use("/api/products", productRouter)
+app.use("/api/v1/auth", authRouter)
 app.use(
   session({
     secret: "Our little secret.",
@@ -30,67 +37,15 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-mongoose.connect(process.env.MONGO_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
 mongoose.set("useCreateIndex", true);
 
-const userSchema = new mongoose.Schema({
-  username: String,
-  name: String,
-  googleId: String,
-  cart: Array,
-  isAdmin: Boolean,
-  secret: String,
-});
-userSchema.plugin(passportLocalMongoose);
-userSchema.plugin(findOrCreate);
-const User = new mongoose.model("User", userSchema);
-passport.use(User.createStrategy());
-passport.serializeUser(function (user, done) {
-  done(null, user.id);
-});
-passport.deserializeUser(function (id, done) {
-  User.findById(id, function (err, user) {
-    done(err, user);
-  });
-});
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.CLIENT_ID,
-      clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: "http://localhost:5000/auth/google/callback",
-      userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
-    },
-    function (accessToken, refreshToken, profile, cb) {
-      User.findOrCreate(
-        {
-          googleId: profile.id,
-          username: profile.displayName,
-          cart: [],
-          isAdmin: false,
-        },
-        function (err, user) {
-          return cb(err, user);
-        }
-      );
-    }
-  )
-);
-app.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["profile"] })
-);
-app.get(
-  "/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "http://localhost:3000" }),
-  function (req, res) {
-    // Successful authentication, redirect secrets.
-    res.redirect("http://localhost:3000");
-  }
-);
+app.get('/users/:id', (req, res) => {
+  const userId = req.params.id
+  User.findOne({ _id: userId }, function (err, foundUserById) {
+    if (err) return console.log(err);
+    res.send(foundUserById);
+})
+})
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
