@@ -4,13 +4,7 @@ require("dotenv").config();
 const cors = require('cors')
 app.use(cors())
 const port = process.env.PORT || 5000;
-const session = require("express-session");
-const passport = require("passport");
-const passportLocalMongoose = require("passport-local-mongoose");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const findOrCreate = require("mongoose-findorcreate");
 const mongoose = require("mongoose");
-const Product = require('./schemas/productSchema')
 const productRouter = require('./routes/productRouter')
 const userRouter = require('./routes/userRouter')
 const authRouter = require('./routes/authRouter')

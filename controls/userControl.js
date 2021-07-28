@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 require("dotenv").config();
 const User = require('../schemas/userSchema')
 const Transaction = require('../schemas/transactionSchema')

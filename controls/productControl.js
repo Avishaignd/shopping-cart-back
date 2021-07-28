@@ -1,9 +1,7 @@
 const Product = require("../schemas/productSchema");
-const mongoose = require("mongoose");
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs')
 require("dotenv").config();
-// mongoose.connect(process.env.MONGO_URL);
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -18,23 +16,6 @@ const getProducts = async (req, res) => {
   });
 };
 
-// const addProduct = async (req, res) => {
-//   const prodToAdd = req.body;
-//   console.log(req.body);
-//   console.log(req.file);
-//   // if (prodToAdd.productId === "") {
-//   //   prodToAdd.productId = Math.random();
-//   // }
-//   // if (prodToAdd.image === "") {
-//   //   prodToAdd.image = "http://placekitten.com/200/300";
-//   // }
-//   // const product = new Product(prodToAdd)
-//   // product.save((function (err, product){
-//   //     if (err) return console.error(err)
-//   //     else res.json(product)
-//   // }))
-// };
-
 const addProduct = (req, res) => {
   console.log(req.body);
   console.log("req-file-path", req.file.path);
@@ -43,7 +24,7 @@ const addProduct = (req, res) => {
       path,
       { public_id: `shopping-cart/${req.body.productName}-${new Date().toISOString()}` },
       function (err, image) {
-          // , "connection error, new pet was not saved"
+          // , "connection error, new product was not saved"
           if (err) {
               res.status(500).send(err)
           }
@@ -54,9 +35,9 @@ const addProduct = (req, res) => {
               const product = new Product(prodToAdd)
               product.image = image.secure_url
               product.save((function (err, product) {
-                  // , "connection error, new pet was not saved"
+                  // , "connection error, new product was not saved"
                   if (err) { return res.status(500).send(err) }
-                  // "pet added"
+                  // "product added"
                   else {
                       console.log(product);
                       return res.status(200).send(product)
