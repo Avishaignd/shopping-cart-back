@@ -1,7 +1,9 @@
 const express = require("express");
 const app = express();
-const port = 5000;
 require("dotenv").config();
+const cors = require('cors')
+app.use(cors())
+const port = process.env.PORT || 5000;
 const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
@@ -29,25 +31,6 @@ mongoose.connect(process.env.MONGO_URL, {
 app.use("/api/products", productRouter)
 app.use("/api/users", userRouter)
 app.use("/api/v1/auth", authRouter)
-
-// app.use(
-//   session({
-//     secret: "Our little secret.",
-//     resave: false,
-//     saveUninitialized: false,
-//   })
-// );
-// app.use(passport.initialize());
-// app.use(passport.session());
-// mongoose.set("useCreateIndex", true);
-
-// app.get('/users/:id', (req, res) => {
-//   const userId = req.params.id
-//   User.findOne({ _id: userId }, function (err, foundUserById) {
-//     if (err) return console.log(err);
-//     res.send(foundUserById);
-// })
-// })
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
