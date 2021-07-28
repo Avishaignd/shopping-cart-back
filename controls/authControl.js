@@ -18,7 +18,7 @@ const login = async (req, res) => {
                 username: email,
                 name: name,
                 cart: [],
-                isAdmin: true,
+                isAdmin: false,
               })
             await user.save(function (err, user) {
                 if (err) return console.error(err)
