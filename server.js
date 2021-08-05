@@ -27,5 +27,5 @@ app.use("/api/users", userRouter)
 app.use("/api/v1/auth", authRouter)
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`app listening`);
 });

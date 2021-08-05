@@ -10,6 +10,12 @@ const addProductToCart = async (req, res) => {
     res.status(200).json(userToUpdate)
 }
 
+const getUser = async (req, res) => {
+    const {id} = req.params
+    const user = await User.findOne({_id: id})
+    res.send(user)
+}
+
 const removeProductFromCart = async (req, res) => {
     const {item, user} = req.body
     User.updateOne({ _id: user }, { "$pull": { "cart": { "_id": item._id } }}, { safe: true, multi:true }, function(err, obj) {
@@ -22,7 +28,7 @@ const checkout = async (req, res) => {
     const user = req.body.user
     // console.log(user.cart);
     const transaction = new Transaction({
-        userId: user._id,
+        user: user,
         products: user.cart
     })
     User.updateOne({ _id: user._id}, { "$set": {cart: [] } },
@@ -40,4 +46,9 @@ const checkout = async (req, res) => {
     })
 }
 
-module.exports = { addProductToCart, removeProductFromCart, checkout }
+const getTransactions = async (req, res) => {
+    const allTransactions = await Transaction.find({})
+    res.json(allTransactions)
+}
+
+module.exports = { addProductToCart, removeProductFromCart, checkout, getUser, getTransactions }
